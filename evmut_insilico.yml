@@ -1,0 +1,15 @@
+name: evmut_insilico
+channels:
+dependencies:
+  - python=3.9.7
+  - pandas
+  - numpy
+  - sklearn
+  - pickle
+  - argparse
+  - copy
+  - os
+  - evcouplings
+  - collections
+  - typing
+  - tqdm
