@@ -11,10 +11,7 @@ author: Ute Hoffmann
 
 import numpy as np
 import numpy.random as npr
-import sklearn
-import pickle
 import argparse
-from copy import deepcopy
 import pandas as pd
 import os
 from evcouplings.couplings import CouplingsModel
@@ -83,6 +80,10 @@ letters_sorted = sorted(letters_sorted)
 aa_dict = model.alphabet_map
 
 positions = model.index_list
+
+def hamming_distance(s1: str, s2: str):
+    """copied from jax_unirep, Return hamming distance between two strings of the same length."""
+    return sum(c1 != c2 for c1, c2 in zip(s1, s2))
 
 def propose(sequence: str): # patch in a way that sequences with only allowed indices and alphabet are used compared to jax_unirep version
     """

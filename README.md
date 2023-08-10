@@ -4,7 +4,7 @@ Code in this repository helps to identify a zero-shot prediction ([Wittmann et a
 
 # Installation
 
-Requirements: bash, python3/miniconda, R
+Requirements: bash, Miniconda (or Anaconda), preferentially mamba, for some code R
 
 Clone this repository
 
@@ -12,10 +12,10 @@ Clone this repository
 git clone https://github.com/ute-hoffmann/EVmut_inSilico
 ```
 
-Set up conda environment, run this command on shell from within folder in which file evmut_insilico.yml is located
+Set up conda environment, run this command on shell from within folder in which file evmut_insilico.yml is located - preferentially mamba to resolve environment! Difficulty with EVcouplings dependencies !
 
 ```bash
-conda env create -f evmut_insilico.yml
+mamba env create -f evmut_insilico.yml
 ```
 
 # Use
@@ -25,7 +25,7 @@ Take into account that enough sequences for multiple sequence alignment, probabl
 
 download model into input folder, adjust file iterate_inSilicoEvolution.sh to number of iterations, temperatures, output directory, where to find .model file, original amino acid sequence
 
-Activate conda environment 
+Activate conda environment, run from base folder
 
 ```bash
 conda activate evmut_insilico
