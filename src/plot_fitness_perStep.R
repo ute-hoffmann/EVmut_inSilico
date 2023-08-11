@@ -1,13 +1,10 @@
 library(tidyverse)
 
-replication_data <- read.csv("results/2000replicates_500steps_3trust.csv")
+# Read job specific name
+args = commandArgs(trailingOnly=T)
+job_specific_name = args[1]
 
-# Fold into rows
-#df = df %>%
-#  select(-sequences) %>%
-#  gather(Data, Value, -accept, -step, -Replicate, -Temperature, -Comparison) %>%
-#  # Use only accepted data
-#  filter(accept)
+replication_data <- read.csv(paste("results/", job_specific_name, "/collect_data_plotting.csv", sep=""))
 
 df_new <- as_tibble(replication_data)
 
@@ -76,5 +73,5 @@ gp = gp + theme(
   strip.placement = "outside"
 )
 
-ggsave("results/2000replicates_500steps_trust3.png", gp, h=12/2.54, w=20/2.54, dpi=200)
+ggsave(paste("results/", job_specific_name, "/collect_data_plotting.png", sep=""), gp, h=12/2.54, w=20/2.54, dpi=200)
 

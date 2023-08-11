@@ -7,8 +7,23 @@ Author: Ute Hoffmann
 
 import os
 import pandas as pd
+import argparse
 
-path_directory = "results/replication_3mutations"
+# Read arguments from the commandline
+parser = argparse.ArgumentParser()
+
+# Required input: job specific name
+parser.add_argument(
+    '-j', '--job_specific_name', type=str,
+    help='Text file with one sequence on one line. Original fasta to start from.'
+)
+
+# Parse arguments
+args = parser.parse_args()
+
+job_name = args.job_specific_name
+
+path_directory = "results/" + job_name + "/trajectories"
 files = os.listdir(path_directory)
 
 data_holder = {"Fitness":[], "Step":[], "Replicate":[], "Temperature":[]}
@@ -34,4 +49,4 @@ for file in files:
 				data_holder["Temperature"].append(temperature)
 				
 df = pd.DataFrame(data_holder)
-df.to_csv('results/2000replicates_500steps_3trust.csv', index=False)
+df.to_csv('results/' + job_name + '/collect_data_plotting.csv', index=False)

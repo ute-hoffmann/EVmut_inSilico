@@ -72,7 +72,7 @@ with open(sequence_file) as s:
 # Load a model for EVmutation
 model = CouplingsModel(model_path)
 
-# path propose() function from jax_unirep/sampler - for EVmutation, only positions which were part of model may be proposed
+# for EVmutation, only positions which were part of model may be proposed
 letters_sorted = ""
 for i in model.alphabet_map.keys():
     letters_sorted = letters_sorted + i
@@ -145,25 +145,37 @@ def scoring_func(sequence: str):
 
     return delta_E
 
-# Patch the is_accepted function to work with multiple scores
-def ia_patch_diff(best: float, candidate: float, temperature: float) -> bool:
-    # Compare candidate based on difference in scores
-    # basically exactly like jax_unirep.sampler.is_accepted, only minor difference (always calculation of np.random.uniform(0,1)
+def is_accepted(best: float, candidate: float, temperature: float) -> bool:
+    """
+    from jax_unirep, uses differences and not ratios...
+    Return boolean decision on whether the candidate mutant is accepted or not.
+
+    This function checks whether we want to
+    accept a new mutant proposed by our MMC sampler,
+    by comparing its predicted activity
+    to the current best mutants activity.
+
+    :param best: Predicted activity of current best mutant
+    :param candidate: Predicted activity of new candidate mutant
+    :param temperature: Boltzmann distribution temperature.
+        Controls acceptance probability.
+        Low T decreases acceptance probability.
+        High T increases acceptance probability.
+    :returns bool: Whether or not candidate mutant was accepted
+    """
+    if (candidate-best)/temperature > 1:
+        return True
+    
     c = np.exp((candidate - best) / temperature)
-    p = np.random.uniform(0, 1)
-    return np.all(c >= p)
 
-def ia_patch_ratio(best: float, candidate: float, temperature: float) -> bool:
-     # Compare candidate based on ratio of scores
-     c = np.exp(np.log(candidate / best) / temperature)
-     p = np.random.uniform(0, 1)
-     return np.all(c >= p)
-
-# Use selected patch (difference or ratio of scores)
-if not ratio:
-    is_accepted = ia_patch_diff
-else:
-    is_accepted = ia_patch_ratio
+    if c > 1:
+        return True
+    else:
+        p = np.random.uniform(0, 1)
+        if c >= p:
+            return True
+        else:
+            return False
 
 def sample_one_chain(
     starter_sequence: str,
