@@ -81,7 +81,21 @@ These frequencies and a brief test which amino acid exchanges co-occur most freq
 
 ## *in silico* evolution with a limited number of possible positions
 
-Run *in silico* evolution again with only limited number of amino acids, check which sequences pop up most frequently together and check their fitness score
+Run *in silico* evolution again with only a limited number of amino acid positions which can be mutated to check which positions show up most frequently together.
+
+In a first step, create a file which gives the positions of interest (compare [positins_of_interest.txt](input/positions_of_interest.txt)) that should be used for mutations. Each position should be given on a new line with the wild-type amino acid in one-letter code followed by its wild-type position, e.g. for a glutamine in the wild-type sequence this would be "Q3". Here, the 30 amino acid positions that occurred most often in the *in silico* evolution described above were used. 
+In a second step, adjust the file [inSilicoEvolution_limitedPositions.sh](src/inSilicoEvolution_limitedPositions.sh) - explanations for different parameters are given above. Run the script by running the following commands from the base directory of this repository:
+
+```bash
+conda activate evmut_insilico
+bash src/inSilicoEvolution_limitedPositions.sh
+```
+
+Proceed as described above to extract the best sequences in the trajectories, count amino acid exchanges etc.: 
+
+```bash
+python src/extract_and_count.py -j Gallionella_cbbM_limitedPos -s input/Gallionella_Rubisco.txt -T 0.03
+```
 
 # Citing supporting repositories
 

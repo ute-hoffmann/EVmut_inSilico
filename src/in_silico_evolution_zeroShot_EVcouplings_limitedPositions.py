@@ -6,6 +6,8 @@ EVmutation code from https://github.com/fhalab/MLDE/blob/39e9edccc346119a834c626
 Perform Metropolis-Hastings MCMC with EVcouplings model as scoring function to create zero-shot predictions (MCMC code taken from https://github.com/ElArkk/jax-unirep/tree/master)
 i.e.: combine approach of Biswas et al., 2021 (Metropolis algorithm to perform in silico directed evolution) and Wittmann et al., 2021 (EVcouplings, zero-shot predictions)
 
+--> only uses limited number of positions!
+
 author: Ute Hoffmann
 """
 
@@ -24,12 +26,12 @@ parser = argparse.ArgumentParser()
 
 # Required input: Infile and project output (positional)
 parser.add_argument(
-    'infile', type=str,
-    help='Text file with one sequence on one line. Original fasta to start from.'
+    '-i', '--infile', type=str,
+    help='Text file with one sequence on one line. Original fasta to start from. Not in fasta format, though - without header'
 )
 
 parser.add_argument(
-    'outfile', type=str,
+    '-o', '--outfile', type=str,
     help='Tab-delimited file with sampled sequences and scores.'
 )
 
@@ -54,6 +56,11 @@ parser.add_argument(
     help='Path to EVcouplings model (ends with .model), downloaded from EVcouplings webserver'
 )
 
+parser.add_argument(
+    '-posInt', '--positionsInterestFile', type=str,
+    help='path to file with positions of interest, numbers on single lines, preceded by WT amino acid in one letter code'
+)
+
 # Parse arguments
 args = parser.parse_args()
 
@@ -64,6 +71,7 @@ trust = args.trust
 temperature = args.temperature
 ratio = args.ratio
 model_path = args.EVcouplings_model
+positions_of_interest_file = args.positionsInterestFile
 
 # Load target sequence
 with open(sequence_file) as s:
@@ -72,7 +80,7 @@ with open(sequence_file) as s:
 # Load a model for EVmutation
 model = CouplingsModel(model_path)
 
-# for EVmutation, only positions which were part of model may be proposed
+# path propose() function from jax_unirep/sampler - for EVmutation, only positions which were part of model may be proposed
 letters_sorted = ""
 for i in model.alphabet_map.keys():
     letters_sorted = letters_sorted + i
@@ -81,11 +89,21 @@ aa_dict = model.alphabet_map
 
 positions = model.index_list
 
+positions_of_interest = []
+
+with open(positions_of_interest_file) as opened_file:
+	for line in opened_file:
+		current_number = int(line.strip("\n")[1:]) # indices start being counted from 1?
+		if current_number not in positions:
+			print(str(current_number) + " is not in model's index_list")
+		else:
+			positions_of_interest.append(current_number)
+
 def hamming_distance(s1: str, s2: str):
     """copied from jax_unirep, Return hamming distance between two strings of the same length."""
     return sum(c1 != c2 for c1, c2 in zip(s1, s2))
 
-def propose(sequence: str): # patch in a way that sequences with only allowed indices and alphabet are used compared to jax_unirep version
+def propose(sequence: str):
     """
     Given a string, return a proposed mutated string.
     The proposed mutant is generated as follows:
@@ -110,11 +128,11 @@ def propose(sequence: str): # patch in a way that sequences with only allowed in
             "sequence passed into `propose` must be at least length 1."
         )
 
-    # define uniform probability for positions and letters
-    pos_prob = np.array([1.0/len(positions)] * len(positions))
+    # define uniform probability for positions and letters # only for the ones of interest: positions_of_interest
+    pos_prob = np.array([1.0/len(positions_of_interest)] * len(positions_of_interest))
     pwm = np.tile(np.array([[0.05] * 20]), (len(sequence), 1))
 
-    position = positions[np.argmax(npr.multinomial(1, pos_prob))]
+    position = positions_of_interest[np.argmax(npr.multinomial(1, pos_prob))]
     new_sequence = ""
     for i, letter in enumerate(sequence):
         if (position-1) != i:
