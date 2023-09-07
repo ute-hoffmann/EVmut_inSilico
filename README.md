@@ -1,4 +1,4 @@
-# EVmutation-based *in silico* evolution
+# Concept of EVmutation-based *in silico* evolution
 
 Code in this repository helps to identify a zero-shot prediction ([Wittmann et al., 2021](https://doi.org/10.1016/j.cels.2021.07.008)) for a higher-order mutant variant library in case there is no prior experimental information. To do so, it uses a Metropolis-Hastings Markov algorithm ("*in silico evolution*") to navigate a fitness landscape given by the phylogeny-guided model calculated by [EVcouplings](https://v2.evcouplings.org/).
 Other algorithms to predict the fitness of higher-order mutant protein variants could theoretically also be used to give a fitness measure for the in silico evolution approach, compare for instance [https://www.proteingym.org/substitutions](https://www.proteingym.org/substitutions).
@@ -11,14 +11,15 @@ All scripts were run on a regular laptop.
 
 ## Software
 
-Requirements: bash, Miniconda (or Anaconda), preferentially mamba, for some code R, R library tidyverse, required python libraries will be installed using conda environment
-
 | Software | Version | Tested version | Note |
 | -------- | ------- | -------------- | --------- |
 | OS | | Ubuntu 22.04 | |
 | Bash | | 5.1.16 | |
-| Python | >3.6 | 3.6.15 | |
+| conda | | 4.12.0 | Installed using Anaconda, but Miniconda should be sufficient |
+| mamba | | 0.7.6 | |
+| Python | >3.6 | 3.6.15 | installed using conda environment |
 | R | | 4.3.1 | with package tidyverse v1.3.1|
+
 
 
 # Installation
@@ -29,13 +30,13 @@ Clone this repository
 git clone https://github.com/ute-hoffmann/EVmut_inSilico
 ```
 
-Set up conda environment, run this command on shell from within folder in which file evmut_insilico.yml is located - use preferentially mamba to resolve environment!
+Set up conda environment, run this command on shell from within folder in which file [evmut_insilico.yml](evmut_insilico.yml) is located - use preferentially mamba to resolve environment!
 
 ```bash
 mamba env create -f evmut_insilico.yml
 ```
 
-# Use
+# Usage
 
 ## Retrieval of EVcouplings model file
 
@@ -78,9 +79,9 @@ python src/extract_and_count.py -j Gallionella_cbbM -s input/Gallionella_Rubisco
 
 These frequencies and a brief test which amino acid exchanges co-occur most frequently can be used to decide on protein sequences that should be tested experimentally. Alternatively, a sub-set of amino acid positions can be chosen and used for another round of in silico evolution to test which of these positions do co-occur most frequently. 
 
-## in silico evolution with a limited number of possible positions
+## *in silico* evolution with a limited number of possible positions
 
-Run in silico evolution again with only limited number of amino acids, check which sequences pop up most frequently together and check their fitness score
+Run *in silico* evolution again with only limited number of amino acids, check which sequences pop up most frequently together and check their fitness score
 
 # Citing supporting repositories
 
