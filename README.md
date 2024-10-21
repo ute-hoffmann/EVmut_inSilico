@@ -15,7 +15,7 @@ All scripts were run on a regular laptop.
 | -------- | ------- | -------------- | --------- |
 | OS | | Ubuntu 22.04 | |
 | Bash | | 5.1.16 | |
-| conda | | 4.12.0 | Installed using Anaconda, but Miniconda should be sufficient |
+| conda | | 4.12.0 | advisable to use [Miniforge](https://github.com/conda-forge/miniforge) |
 | mamba | | 0.7.6 | |
 | Python | >3.6 | 3.6.15 | installed using conda environment |
 | R | | 4.3.1 | with package tidyverse v1.3.1|
@@ -30,10 +30,10 @@ Clone this repository
 git clone https://github.com/ute-hoffmann/EVmut_inSilico
 ```
 
-Set up conda environment, run this command on shell from within folder in which file [evmut_insilico.yml](evmut_insilico.yml) is located - use preferentially mamba to resolve environment!
+Set up conda environment, run this command on shell from within folder in which file [evmut_insilico.yml](evmut_insilico.yml) is located
 
 ```bash
-mamba env create -f evmut_insilico.yml
+conda env create -f evmut_insilico.yml
 ```
 
 # Usage
